@@ -1,251 +1,260 @@
-import React, { useState } from 'react';
-import { BookOpen, Database, Code, Server, ChevronDown, ChevronUp } from 'lucide-react';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Server,
+  Sparkles,
+  Library,
+  Brain,
+  Database,
+  RotateCw,
+  X,
+  Check,
+  ArrowRight,
+} from "lucide-react";
+
+const crew = [
+  {
+    role: "The Conductor",
+    tech: "FastAPI",
+    icon: Server,
+    gradient: "from-indigo-500 to-blue-500",
+    front: "Routes every request and keeps the whole system on tempo.",
+    back: "FastAPI handles requests asynchronously, validates them with Pydantic, and initializes the recommendation engine lazily — so startup stays light and cold starts stay fast.",
+  },
+  {
+    role: "The Embedder",
+    tech: "OpenAI",
+    icon: Sparkles,
+    gradient: "from-purple-500 to-indigo-500",
+    front: "Turns a paragraph about a book into a fingerprint of what it means.",
+    back: "Every book description is converted into a 1536-dimension vector using OpenAI's embedding model — capturing meaning and theme, not just words.",
+  },
+  {
+    role: "The Librarian",
+    tech: "ChromaDB",
+    icon: Library,
+    gradient: "from-pink-500 to-purple-500",
+    front: "Remembers where every single book lives, and finds its neighbors instantly.",
+    back: "A persistent Chroma vector index stores every embedding and retrieves the closest matches by cosine similarity — across the whole catalog, in milliseconds.",
+  },
+  {
+    role: "The Reader",
+    tech: "Hugging Face",
+    icon: Brain,
+    gradient: "from-rose-500 to-pink-500",
+    front: "Reads between the lines to feel out a book's emotional tone.",
+    back: "A zero-shot classifier (bart-large-mnli) scores each description's emotional register — without ever being fine-tuned on books specifically.",
+  },
+  {
+    role: "The Archivist",
+    tech: "MongoDB",
+    icon: Database,
+    gradient: "from-blue-500 to-cyan-500",
+    front: "Keeps titles, authors, and ratings straight, no matter how the catalog grows.",
+    back: "MongoDB stores and indexes book metadata, joining titles, authors, categories, and ratings back onto every vector search hit.",
+  },
+];
+
+const keywordMisses = [
+  '"book about starting over after loss"',
+  '→ no exact phrase match',
+  '→ 0 results',
+];
+
+const semanticHits = [
+  { title: "The Five People You Meet in Heaven", note: "grief, second chances" },
+  { title: "A Man Called Ove", note: "loneliness, quiet reinvention" },
+  { title: "Eleanor Oliphant Is Completely Fine", note: "isolation, healing" },
+];
 
 export default function About() {
-  const [expandedSection, setExpandedSection] = useState(null);
+  const [flipped, setFlipped] = useState(() => crew.map(() => false));
 
-  const toggleSection = (section) => {
-    setExpandedSection(expandedSection === section ? null : section);
+  const toggleFlip = (i) => {
+    setFlipped((prev) => prev.map((v, idx) => (idx === i ? !v : v)));
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-4xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex justify-center mb-4">
-            <BookOpen className="w-16 h-16 text-blue-500" />
+    <div className="min-h-screen bg-gray-950 text-white">
+      {/* Hero */}
+      <div className="relative overflow-hidden border-b border-gray-900">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_-10%,rgba(120,119,198,0.25),rgba(255,255,255,0))]" />
+        <div className="relative max-w-4xl mx-auto px-6 pt-24 pb-20 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 mb-6">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span className="text-sm text-indigo-300 font-medium">About lit-pick</span>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-4">
-            About Our Book Recommendation System
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-tight">
+            Built for readers who remember{" "}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+              the feeling
+            </span>
+            , not the title
           </h1>
-          <p className="text-xl text-gray-400">
-            Personalized book recommendations powered by data science and machine learning
+          <p className="mt-6 text-lg text-gray-400 leading-relaxed max-w-2xl mx-auto">
+            You know the one — funny and sad at the same time, something about
+            starting over, maybe a small town. You just can't remember what it
+            was called. That's the search lit-pick was built to answer.
           </p>
-        </div>
-
-        {/* Introduction */}
-        <div className="bg-gray-800 rounded-lg shadow-lg p-8 mb-8 border border-gray-700">
-          <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
-          <p className="text-gray-300 leading-relaxed">
-            We believe every reader deserves to discover their next favorite book. Our platform uses 
-            advanced recommendation algorithms to analyze reading patterns and suggest books tailored 
-            to your unique taste. Whether you're into classic literature, contemporary fiction, or 
-            non-fiction, we've got something for everyone.
-          </p>
-        </div>
-
-        {/* How It Works - Accordion Style */}
-        <div className="space-y-4 mb-8">
-          <h2 className="text-3xl font-bold text-white mb-6">How It Works</h2>
-
-          {/* Section 1: Understanding Recommendation Systems */}
-          <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
-            <button
-              onClick={() => toggleSection('recommender')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-750 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Code className="w-6 h-6 text-blue-500" />
-                <h3 className="text-xl font-semibold text-white">
-                  Recommendation System Fundamentals
-                </h3>
-              </div>
-              {expandedSection === 'recommender' ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
-            </button>
-            {expandedSection === 'recommender' && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700">
-                <p className="text-gray-300 mb-4">
-                  Our system employs collaborative filtering and content-based recommendation techniques:
-                </p>
-                <ul className="space-y-3 text-gray-300">
-                  <li className="flex gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span><strong className="text-white">Collaborative Filtering:</strong> Analyzes user behavior and ratings to find similar readers and recommend books they enjoyed</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span><strong className="text-white">Content-Based Filtering:</strong> Matches book attributes like genre, author, and themes with your preferences</span>
-                  </li>
-                  <li className="flex gap-2">
-                    <span className="text-blue-500 font-bold">•</span>
-                    <span><strong className="text-white">Hybrid Approach:</strong> Combines multiple algorithms for more accurate and diverse recommendations</span>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Section 2: Data Collection */}
-          <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
-            <button
-              onClick={() => toggleSection('data')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-750 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Database className="w-6 h-6 text-purple-500" />
-                <h3 className="text-xl font-semibold text-white">
-                  Data Collection from Kaggle
-                </h3>
-              </div>
-              {expandedSection === 'data' ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
-            </button>
-            {expandedSection === 'data' && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700">
-                <p className="text-gray-300 mb-4">
-                  Our dataset was sourced from Kaggle, featuring comprehensive book and user rating data:
-                </p>
-                <div className="bg-gray-900 rounded-lg p-4 mb-4 border border-gray-700">
-                  <p className="font-mono text-sm text-gray-300 mb-2">Dataset includes:</p>
-                  <ul className="space-y-2 text-gray-400">
-                    <li>• Over 1 million book ratings from thousands of users</li>
-                    <li>• Detailed book metadata (titles, authors, ISBNs, publication years)</li>
-                    <li>• User demographic information for better personalization</li>
-                    <li>• Rating scales from 1-10 for nuanced preferences</li>
-                  </ul>
-                </div>
-                <p className="text-gray-300">
-                  The raw data was downloaded in CSV format, providing a solid foundation for building 
-                  our recommendation engine.
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Section 3: Data Cleaning */}
-          <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
-            <button
-              onClick={() => toggleSection('cleaning')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-750 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Code className="w-6 h-6 text-green-500" />
-                <h3 className="text-xl font-semibold text-white">
-                  Data Cleaning with Jupyter Notebook
-                </h3>
-              </div>
-              {expandedSection === 'cleaning' ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
-            </button>
-            {expandedSection === 'cleaning' && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700">
-                <p className="text-gray-300 mb-4">
-                  Using Jupyter Notebook and Python libraries, we performed extensive data cleaning:
-                </p>
-                <div className="bg-black rounded-lg p-4 mb-4 overflow-x-auto border border-gray-800">
-                  <code className="text-green-400 text-sm">
-                    <div>import pandas as pd</div>
-                    <div>import numpy as np</div>
-                    <div className="mt-2"># Load raw data</div>
-                    <div>books_df = pd.read_csv('books.csv')</div>
-                    <div>ratings_df = pd.read_csv('ratings.csv')</div>
-                    <div className="mt-2"># Clean and preprocess</div>
-                    <div>books_df.drop_duplicates(inplace=True)</div>
-                    <div>books_df.fillna(method='ffill', inplace=True)</div>
-                  </code>
-                </div>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• Removed duplicate entries and null values</li>
-                  <li>• Standardized author names and book titles</li>
-                  <li>• Filtered out books with insufficient ratings</li>
-                  <li>• Normalized rating scales for consistency</li>
-                  <li>• Created DataFrames for efficient processing</li>
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Section 4: Flask API */}
-          <div className="bg-gray-800 rounded-lg shadow-md overflow-hidden border border-gray-700">
-            <button
-              onClick={() => toggleSection('api')}
-              className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-750 transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Server className="w-6 h-6 text-orange-500" />
-                <h3 className="text-xl font-semibold text-white">
-                  Flask API Backend
-                </h3>
-              </div>
-              {expandedSection === 'api' ? (
-                <ChevronUp className="w-5 h-5 text-gray-400" />
-              ) : (
-                <ChevronDown className="w-5 h-5 text-gray-400" />
-              )}
-            </button>
-            {expandedSection === 'api' && (
-              <div className="px-6 pb-6 pt-2 border-t border-gray-700">
-                <p className="text-gray-300 mb-4">
-                  The cleaned data and recommendation algorithms are served through a Flask REST API:
-                </p>
-                <div className="bg-black rounded-lg p-4 mb-4 overflow-x-auto border border-gray-800">
-                  <code className="text-green-400 text-sm">
-                    <div>from flask import Flask, jsonify, request</div>
-                    <div>import pickle</div>
-                    <div className="mt-2">app = Flask(__name__)</div>
-                    <div className="mt-2"># Load preprocessed data</div>
-                    <div>with open('model.pkl', 'rb') as f:</div>
-                    <div>&nbsp;&nbsp;model = pickle.load(f)</div>
-                    <div className="mt-2">@app.route('/recommendations', methods=['POST'])</div>
-                    <div>def get_recommendations():</div>
-                    <div>&nbsp;&nbsp;user_input = request.json</div>
-                    <div>&nbsp;&nbsp;recommendations = model.predict(user_input)</div>
-                    <div>&nbsp;&nbsp;return jsonify(recommendations)</div>
-                  </code>
-                </div>
-                <ul className="space-y-2 text-gray-300">
-                  <li>• RESTful endpoints for book searches and recommendations</li>
-                  <li>• Efficient data serialization with Pickle</li>
-                  <li>• Fast response times with caching mechanisms</li>
-                  <li>• CORS enabled for seamless React frontend integration</li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Tech Stack */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg p-8 border border-blue-500">
-          <h2 className="text-2xl font-bold mb-6 text-white">Technology Stack</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="bg-gray-700 bg-opacity-20 rounded-lg p-4 mb-2">
-                <p className="font-semibold text-white">Frontend</p>
-              </div>
-              <p className="text-sm text-gray-200">React.js</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-gray-700 bg-opacity-50 rounded-lg p-4 mb-2">
-                <p className="font-semibold text-white">Backend</p>
-              </div>
-              <p className="text-sm text-gray-200">Flask API</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-gray-700 bg-opacity-20 rounded-lg p-4 mb-2">
-                <p className="font-semibold text-white">Data Processing</p>
-              </div>
-              <p className="text-sm text-gray-200">Pandas, NumPy</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-gray-700 bg-opacity-20 rounded-lg p-4 mb-2">
-                <p className="font-semibold text-white">ML Libraries</p>
-              </div>
-              <p className="text-sm text-gray-200">Scikit-learn</p>
-            </div>
-          </div>
         </div>
       </div>
+
+      {/* Keyword vs semantic */}
+      <section className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl font-bold">
+              Same question.{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
+                Two very different searches.
+              </span>
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Keyword search — the old way */}
+            <div className="rounded-2xl border border-gray-800 bg-gray-900/40 p-7 opacity-80">
+              <div className="flex items-center gap-2 mb-5">
+                <X className="w-4 h-4 text-gray-500" />
+                <span className="text-xs uppercase tracking-wider text-gray-500 font-medium">
+                  Keyword search
+                </span>
+              </div>
+              <div className="rounded-lg bg-gray-950 border border-gray-800 px-4 py-3 text-sm text-gray-400 mb-5">
+                {keywordMisses[0]}
+              </div>
+              <div className="space-y-2 text-sm text-gray-600">
+                <p>{keywordMisses[1]}</p>
+                <p className="text-gray-500 font-medium">{keywordMisses[2]}</p>
+              </div>
+            </div>
+
+            {/* Semantic search — lit-pick */}
+            <div className="relative rounded-2xl border border-indigo-500/30 bg-gray-900/60 p-7 shadow-lg shadow-indigo-500/10">
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-indigo-500/10 to-pink-500/10 pointer-events-none" />
+              <div className="relative">
+                <div className="flex items-center gap-2 mb-5">
+                  <Check className="w-4 h-4 text-indigo-400" />
+                  <span className="text-xs uppercase tracking-wider text-indigo-300 font-medium">
+                    Semantic search · lit-pick
+                  </span>
+                </div>
+                <div className="rounded-lg bg-gray-950 border border-gray-800 px-4 py-3 text-sm text-gray-100 mb-5">
+                  "book about starting over after loss"
+                </div>
+                <div className="space-y-3">
+                  {semanticHits.map((b) => (
+                    <div
+                      key={b.title}
+                      className="flex items-center justify-between gap-3 rounded-lg bg-gray-950/60 border border-gray-800/80 px-3 py-2.5"
+                    >
+                      <span className="text-sm text-gray-100">{b.title}</span>
+                      <span className="text-[11px] text-indigo-300/80 bg-indigo-500/10 px-2 py-0.5 rounded-full whitespace-nowrap">
+                        {b.note}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-center text-sm text-gray-500 mt-6">
+            No book here has the phrase "starting over after loss" in its
+            description. lit-pick found them anyway.
+          </p>
+        </div>
+      </section>
+
+      {/* Meet the engine — flip cards */}
+      <section className="py-24 px-6 bg-gray-900/40 border-y border-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold">Meet the Engine</h2>
+          </div>
+          <p className="text-center text-gray-400 max-w-xl mx-auto mb-14">
+            Five services, each doing one job well. Click a card to see what's
+            actually running underneath.
+          </p>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-5">
+            {crew.map((member, i) => (
+              <button
+                key={member.role}
+                onClick={() => toggleFlip(i)}
+                className="text-left [perspective:1200px] group"
+                aria-label={`Flip ${member.role} card`}
+              >
+                <div
+                  className="relative h-64 transition-transform duration-500 [transform-style:preserve-3d]"
+                  style={{ transform: flipped[i] ? "rotateY(180deg)" : "rotateY(0deg)" }}
+                >
+                  {/* Front */}
+                  <div
+                    className="absolute inset-0 rounded-2xl border border-gray-800 bg-gray-950 p-5 flex flex-col [backface-visibility:hidden]"
+                  >
+                    <div
+                      className={`w-11 h-11 rounded-xl bg-gradient-to-br ${member.gradient} flex items-center justify-center mb-4`}
+                    >
+                      <member.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-base font-semibold text-white">{member.role}</h3>
+                    <p className="text-xs text-gray-500 mb-3">{member.tech}</p>
+                    <p className="text-sm text-gray-400 leading-relaxed flex-1">{member.front}</p>
+                    <div className="flex items-center gap-1.5 text-[11px] text-gray-600 mt-3">
+                      <RotateCw className="w-3 h-3" />
+                      tap to see how
+                    </div>
+                  </div>
+
+                  {/* Back */}
+                  <div
+                    className={`absolute inset-0 rounded-2xl border border-gray-800 bg-gradient-to-br ${member.gradient} p-5 flex flex-col [backface-visibility:hidden]`}
+                    style={{ transform: "rotateY(180deg)" }}
+                  >
+                    <p className="text-xs uppercase tracking-wider text-white/70 mb-3">{member.tech}</p>
+                    <p className="text-sm text-white leading-relaxed flex-1">{member.back}</p>
+                    <div className="flex items-center gap-1.5 text-[11px] text-white/60 mt-3">
+                      <RotateCw className="w-3 h-3" />
+                      tap to flip back
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Philosophy / closing */}
+      <section className="py-24 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+            The best recommendation isn't the most popular book.
+            <br />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+              It's the right one for what you're feeling right now.
+            </span>
+          </h2>
+          <p className="text-gray-400 leading-relaxed mb-10 max-w-xl mx-auto">
+            That's the whole premise of lit-pick: search by meaning and mood,
+            not just metadata, and let the catalog surface books a keyword
+            search would have missed entirely.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/top-50">
+              <button className="group inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-semibold hover:shadow-lg hover:shadow-indigo-500/30 transition-all duration-300">
+                Try it yourself
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+            </Link>
+            <Link to="/recommend">
+              <button className="px-7 py-3.5 border-2 border-gray-700 rounded-xl font-semibold hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-300">
+                Get a recommendation
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

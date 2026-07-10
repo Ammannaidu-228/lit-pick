@@ -1,61 +1,75 @@
+import { useEffect, useState } from "react";
 import {
   BookOpen,
   Sparkles,
+  Search,
+  Brain,
   Zap,
   Database,
-  Brain,
-  TrendingUp,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+
 export default function Landing() {
   const features = [
     {
       icon: Brain,
-      title: "Smart ML Algorithms",
+      title: "Semantic Understanding",
       description:
-        "Powered by Scikit-learn's advanced similarity-based and ranking models for 20% better recommendations",
+        "Every book is embedded with OpenAI into a rich vector representation, so search understands meaning and theme — not just matching keywords.",
+    },
+    {
+      icon: Sparkles,
+      title: "Mood-Aware Recommendations",
+      description:
+        "An emotion-aware model reads the tone of every description, helping surface books that actually match how you want to feel.",
     },
     {
       icon: Zap,
-      title: "Lightning Fast",
+      title: "Fast, Scalable Search",
       description:
-        "Flask API backend delivers predictions in under 200ms for a seamless browsing experience",
-    },
-    {
-      icon: Database,
-      title: "Massive Dataset",
-      description:
-        "50K+ meticulously cleaned records using Pandas and NumPy for high-quality recommendations",
+        "A persistent vector index and an async API keep recommendations responsive, even as the catalog grows.",
     },
   ];
 
-  const techniques = [
+  const steps = [
     {
-      title: "Collaborative Filtering",
+      title: "Understand",
       description:
-        "Analyzes user behavior and ratings to find similar readers and recommend books they enjoyed",
+        "Book descriptions are converted into high-dimensional vectors that capture meaning, theme, and tone — not just words.",
       gradient: "from-purple-500 to-pink-500",
     },
     {
-      title: "Content-Based Filtering",
+      title: "Search",
       description:
-        "Matches book attributes like genre, author, and themes with your preferences",
+        "Your query is embedded the same way, then matched against the catalog using vector similarity — so 'adventure' finds books about adventure, even without the word.",
       gradient: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Hybrid Approach",
+      title: "Rank & Enrich",
       description:
-        "Combines multiple algorithms for more accurate and diverse recommendations",
+        "Matches are enriched with ratings, categories, and emotional tone, then ranked to surface the best fit for your search.",
       gradient: "from-orange-500 to-red-500",
     },
   ];
 
   const stats = [
-    { value: "50K+", label: "Books Analyzed" },
-    { value: "<200ms", label: "Response Time" },
-    { value: "20%", label: "Better Accuracy" },
-    { value: "3", label: "ML Models" },
+    { value: "1536D", label: "Embedding Vectors" },
+    { value: "Cosine", label: "Similarity Search" },
+    { value: "Zero-Shot", label: "Emotion AI" },
+    { value: "Real-Time", label: "Semantic Search" },
   ];
+
+  const demoResults = [
+    { title: "Children of Húrin", author: "J.R.R. Tolkien", match: 89 },
+    { title: "Undaunted Courage", author: "Stephen E. Ambrose", match: 87 },
+    { title: "The Circus of Adventure", author: "Enid Blyton", match: 86 },
+  ];
+
+  const [barsFilled, setBarsFilled] = useState(false);
+  useEffect(() => {
+    const id = setTimeout(() => setBarsFilled(true), 400);
+    return () => clearTimeout(id);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
@@ -69,63 +83,107 @@ export default function Landing() {
           <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 sm:pt-32 sm:pb-32">
-          <div className="text-center space-y-8">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
-              <Sparkles className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm text-indigo-300 font-medium">
-                Powered by Advanced Machine Learning
-              </span>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 sm:pt-32 sm:pb-24">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <div className="text-center lg:text-left space-y-8">
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-sm">
+                <Sparkles className="w-4 h-4 text-indigo-400" />
+                <span className="text-sm text-indigo-300 font-medium">
+                  Powered by OpenAI Embeddings & Vector Search
+                </span>
+              </div>
+
+              {/* Main Heading */}
+              <h1 className="text-5xl sm:text-6xl xl:text-7xl font-bold tracking-tight">
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
+                  Discover Your
+                </span>
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 mt-2">
+                  Next Favorite Book
+                </span>
+              </h1>
+
+              {/* Subheading */}
+              <p className="max-w-xl mx-auto lg:mx-0 text-lg sm:text-xl text-gray-300 leading-relaxed">
+                Search by theme, mood, or plot — not just title. Lit-pick understands
+                what a book is <em className="not-italic text-gray-100">about</em>,
+                so you find your next read even when you can't remember its name.
+              </p>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                <Link to={"/recommend"}>
+                  <button className="group relative px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-semibold text-lg shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transform hover:scale-105 transition-all duration-300">
+                    <span className="relative z-10 flex items-center gap-2">
+                      Get Started
+                      <BookOpen className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                    </span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </button>
+                </Link>
+
+                <Link to="/top-50">
+                  <button className="px-8 py-4 border-2 border-gray-700 rounded-xl font-semibold text-lg hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-300">
+                    Try Semantic Search
+                  </button>
+                </Link>
+              </div>
             </div>
 
-            {/* Main Heading */}
-            <h1 className="text-5xl sm:text-7xl font-bold tracking-tight">
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
-                Discover Your
-              </span>
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 mt-2">
-                Next Favorite Book
-              </span>
-            </h1>
-
-            {/* Subheading */}
-            <p className="max-w-2xl mx-auto text-xl text-gray-300 leading-relaxed">
-              Experience personalized book recommendations powered by
-              cutting-edge ML algorithms. Find books you'll love based on your
-              unique reading preferences.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
-              <Link to={"/recommend"}>
-                <button className="group relative px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl font-semibold text-lg shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transform hover:scale-105 transition-all duration-300">
-                  <span className="relative z-10 flex items-center gap-2">
-                    Get Started
-                    <BookOpen className="w-5 h-5 group-hover:rotate-12 transition-transform" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              </Link>
-
-              <Link to="/top-50">
-                <button className="px-8 py-4 border-2 border-gray-700 rounded-xl font-semibold text-lg hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-300">
-                  View Top 50 Books
-                </button>
-              </Link>
-            </div>
-
-            {/* Stats Bar */}
-            <div className="pt-12 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center space-y-2">
-                  <div className="text-3xl sm:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
+            {/* Live search demo card */}
+            <div className="relative">
+              <div className="absolute -inset-4 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-2xl" />
+              <div className="relative rounded-2xl bg-gray-900/70 border border-gray-800 backdrop-blur-xl p-6 shadow-2xl">
+                <div className="flex items-center gap-2 mb-5">
+                  <Search className="w-4 h-4 text-indigo-400" />
+                  <span className="text-sm font-medium text-gray-300">Semantic Search</span>
                 </div>
-              ))}
+
+                <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gray-950/70 border border-gray-800 mb-5">
+                  <Search className="w-4 h-4 text-gray-500 shrink-0" />
+                  <span className="text-gray-100 text-sm">adventure</span>
+                </div>
+
+                <div className="space-y-3">
+                  {demoResults.map((book, i) => (
+                    <div
+                      key={book.title}
+                      className="flex items-center justify-between gap-4 p-3 rounded-lg bg-gray-950/50 border border-gray-800/80"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-gray-100 truncate">{book.title}</p>
+                        <p className="text-xs text-gray-500 truncate">{book.author}</p>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0 w-24">
+                        <div className="flex-1 h-1.5 rounded-full bg-gray-800 overflow-hidden">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-indigo-400 to-pink-400 transition-all duration-1000 ease-out"
+                            style={{
+                              width: barsFilled ? `${book.match}%` : "0%",
+                              transitionDelay: `${i * 150}ms`,
+                            }}
+                          />
+                        </div>
+                        <span className="text-[11px] text-gray-400 tabular-nums">{book.match}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Stats Bar */}
+          <div className="pt-20 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center space-y-2">
+                <div className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-gray-400">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -136,12 +194,11 @@ export default function Landing() {
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl sm:text-5xl font-bold">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
-                Built for Performance
+                Search That Understands You
               </span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              State-of-the-art technology stack delivering fast, accurate
-              recommendations
+              Built on modern AI infrastructure to find books by meaning, not just keywords
             </p>
           </div>
 
@@ -175,37 +232,36 @@ export default function Landing() {
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-4xl sm:text-5xl font-bold">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-                Advanced Recommendation Engine
+                How the Recommendations Work
               </span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Our hybrid ML approach combines multiple techniques for superior
-              accuracy
+              From a search query to a ranked list of books, in three steps
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {techniques.map((technique, index) => (
+            {steps.map((step, index) => (
               <div
                 key={index}
                 className="relative p-8 rounded-2xl bg-gray-950/80 border border-gray-800 overflow-hidden group hover:border-gray-700 transition-all duration-300"
               >
                 <div
-                  className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${technique.gradient}`}
+                  className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${step.gradient}`}
                 />
                 <div className="relative space-y-4">
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-10 h-10 rounded-lg bg-gradient-to-br ${technique.gradient} flex items-center justify-center text-white font-bold`}
+                      className={`w-10 h-10 rounded-lg bg-gradient-to-br ${step.gradient} flex items-center justify-center text-white font-bold`}
                     >
                       {index + 1}
                     </div>
                     <h3 className="text-xl font-semibold text-white">
-                      {technique.title}
+                      {step.title}
                     </h3>
                   </div>
                   <p className="text-gray-400 leading-relaxed">
-                    {technique.description}
+                    {step.description}
                   </p>
                 </div>
               </div>
@@ -224,18 +280,19 @@ export default function Landing() {
               </span>
             </h2>
             <p className="text-xl text-gray-400">
-              Built with industry-leading technologies
+              Built with industry-leading AI and backend technologies
             </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
             {[
               "React.js",
-              "Flask",
-              "Scikit-learn",
-              "Pandas",
-              "NumPy",
-              "Machine Learning",
+              "FastAPI",
+              "OpenAI Embeddings",
+              "ChromaDB",
+              "MongoDB",
+              "Hugging Face Transformers",
+              "Docker",
             ].map((tech, index) => (
               <div
                 key={index}
