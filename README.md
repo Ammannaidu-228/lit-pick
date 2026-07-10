@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/banner.png" alt="lit-pick — AI-powered semantic book discovery" width="100%" />
+<img src="public/litpick.png" alt="lit-pick — AI-powered semantic book discovery" width="100%" />
 
 <br/>
 
