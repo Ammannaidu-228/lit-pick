@@ -22,7 +22,7 @@ function Home() {
       try {
         setLoading(true);
         setError("");
-        const response = await axios.get(`${API_BASE}/books`);
+        const response = await axios.get(`${API_BASE}/books?limit=50`);
         const list = response.data?.books || [];
         setBooks(list);
         if (list.length === 0) {
